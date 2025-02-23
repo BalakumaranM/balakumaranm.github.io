@@ -1,7 +1,7 @@
 ---
 title: 'Damage Assessment of a Physical Beam Reinforced with Masses using Machine Learning - Part 3'
 date: 2024-09-22
-permalink: /posts/2024/09/blog-post-1/
+permalink: /posts/2024/09/blog-post-3/
 tags:
   shm
 ---
@@ -106,3 +106,9 @@ As the dataset focuses on vibration-based damage detection, a variety of analyse
     - **Description:** Compare machine learning results to simple, non-ML techniques.
     - **Methods:** Visual inspection of FRFs, threshold-based peak shifts.
     - **Why Important:** Validates advanced methods but offers limited standalone value compared to ML.
+
+---
+
+[Next Page](/posts/2024/09/blog-post-4/)
+
+---

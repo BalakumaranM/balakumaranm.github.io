@@ -102,6 +102,6 @@ So since we took acceleration measurement of 6400 data points in acceleration-ti
 
 ---
 
-[Next Page](/subposts/2024-09-22-blog-post-1-part-3.md)
+[Next Page](/posts/2024/09/blog-post-3/)
 
 ---
