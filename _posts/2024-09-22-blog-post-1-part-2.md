@@ -1,7 +1,7 @@
 ---
 title: 'Damage Assessment of a Physical Beam Reinforced with Masses using Machine Learning - Part 2'
 date: 2024-09-22
-permalink: /posts/2024/09/blog-post-1/
+permalink: /posts/2024/09/blog-post-2/
 tags:
   shm
 ---
