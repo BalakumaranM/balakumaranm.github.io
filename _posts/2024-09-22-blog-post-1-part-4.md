@@ -21,6 +21,11 @@ I started with a simple transformer encoder model using these hyperparameters:
 
 Right off the bat, the model performed terribly—its best accuracy was barely around 25%. I was puzzled. I thought, “The dataset’s small, yes, but shouldn’t the model be able to learn something meaningful?” I tried everything: unwrapping the phase data to smooth out those abrupt jumps, normalizing, and even smoothing the signals. Nothing seemed to help.
 
+<div style="text-align: center;">
+  <img src="/images/blog_related/test_1_magnitude.png" alt="Confusion Matrix" style="width:50%;">
+  <p><strong>Frequency- Magnitude graph for sample 1 from all 4 classes</strong></p>
+</div>
+
 Then it hit me. I started looking at the frequency-magnitude graphs (you might remember those from Part 1 and 2) and noticed that not all frequencies are equally important. The first three vibrational modes—roughly between 10–40 Hz, 120–160 Hz, and 350–450 Hz—were clearly the key players in differentiating between healthy and damaged states. I decided to filter out frequencies outside these ranges, which made a world of difference. Suddenly, the transformer could focus on the parts of the frequency domain that really mattered.
 
 I also experimented with a hybrid approach, adding a few convolutional layers before the transformer. Convolutional networks are fantastic at grabbing local patterns (like those resonance peaks we saw), and they helped reduce the sequence length even further. This hybrid model provided an extra boost, but it wasn’t until I tweaked the transformer itself that things really started to click.
@@ -36,10 +41,15 @@ Here’s a quick rundown of my key observations:
 
 The final model achieved an impressive **test accuracy of 97.86%**. Here’s the classification report for a quick look:
 
-         precision    recall  f1-score   support
-
- Healthy       0.99      0.94      0.96        70
-accuracy                           0.98       280
+| **Class**       | **Precision** | **Recall** | **F1-Score** | **Support** |
+|-----------------|---------------|------------|-------------:|-----------:|
+| **Healthy**     | 0.99          | 0.94       | 0.96         | 70         |
+| **Damage 2.96** | 0.95          | 0.99       | 0.97         | 70         |
+| **Damage 5.92** | 1.00          | 0.99       | 0.99         | 70         |
+| **Damage 8.87** | 0.99          | 1.00       | 0.99         | 70         |
+| **Accuracy**    | –             | –          | 0.98         | 280        |
+| **Macro Avg**   | 0.98          | 0.98       | 0.98         | 280        |
+| **Weighted Avg**| 0.98          | 0.98       | 0.98         | 280        |
 
 
 And here’s the confusion matrix that shows just how well the model distinguishes among the classes:
