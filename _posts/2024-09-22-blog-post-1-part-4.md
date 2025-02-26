@@ -6,81 +6,52 @@ tags:
   - shm
 ---
 
-# Transformer Model Training and Optimization
+Hey everyone, welcome to the final part of this series. In the earlier posts, we walked through our beam-signal dataset, explored time-domain vs. frequency-domain representations, and even dove into some time-frequency insights using the STFT. Today, I’m excited to share how I trained our transformer model and the many lessons I learned along the way.
 
-In [Part 3](https://balakumaranm.github.io/posts/2024/09/blog-post-3/), we explored the structure and contents of our beam-signal dataset, highlighting how frequency response data is collected and stored. Now, we move on to the core of our research: **training a transformer-based model** for damage classification. This post walks through the **model architecture**, **preprocessing steps**, **hyperparameter tuning**, and the **final results**—including lessons learned along the way.
+I won’t get into the nitty-gritty of how transformers work from the ground up—trust me, that could fill a book! If you’re curious about the deep theory, I highly recommend checking out courses like MIT’s 6.S191 or Andrew Ng’s deep learning series. Instead, I’ll jump straight into the practical side of things: what I did, the hurdles I faced, and how I eventually got the model to work.
 
----
+I started with a simple transformer encoder model using these hyperparameters:
+- **d_model:** 64
+- **Attention heads:** 4
+- **Encoder layers:** 2
+- **Dropout:** 0.1
+- **Batch size:** 8
+- **Learning rate:** 1e-4
+- **Max sequence length:** 1100 (downsampled from the original 6400 points)
 
-## 1. Initial Approach
+Right off the bat, the model performed terribly—its best accuracy was barely around 25%. I was puzzled. I thought, “The dataset’s small, yes, but shouldn’t the model be able to learn something meaningful?” I tried everything: unwrapping the phase data to smooth out those abrupt jumps, normalizing, and even smoothing the signals. Nothing seemed to help.
 
-### Model Architecture
+Then it hit me. I started looking at the frequency-magnitude graphs (you might remember those from Part 1 and 2) and noticed that not all frequencies are equally important. The first three vibrational modes—roughly between 10–40 Hz, 120–160 Hz, and 350–450 Hz—were clearly the key players in differentiating between healthy and damaged states. I decided to filter out frequencies outside these ranges, which made a world of difference. Suddenly, the transformer could focus on the parts of the frequency domain that really mattered.
 
-I began with a simple **transformer encoder**:
-- **Embedding dimension (d_model):** 64  
-- **Number of heads:** 4  
-- **Encoder layers:** 2  
-- **Dropout:** 0.1  
-- **Batch size:** 8  
-- **Learning rate:** 1e-4  
-- **Max sequence length (max_seq_len):** 1100  
+I also experimented with a hybrid approach, adding a few convolutional layers before the transformer. Convolutional networks are fantastic at grabbing local patterns (like those resonance peaks we saw), and they helped reduce the sequence length even further. This hybrid model provided an extra boost, but it wasn’t until I tweaked the transformer itself that things really started to click.
 
-Since each sample originally had **6400** frequency points (ranging from 0 to 2000 Hz with a 0.3125 Hz interval), I **downsampled** them to 1100 points for computational efficiency. However, the initial model yielded a **maximum accuracy of around 25%**, which was essentially random guessing across our four damage classes.
+One surprising yet crucial adjustment was reducing the batch size. With a batch size of 8, the model’s accuracy was erratic. When I lowered it to 4—and eventually to 2—the performance improved dramatically. With smaller batches, the model received more frequent weight updates, which seemed to help it navigate the complex loss landscape better, especially given our small dataset.
 
-### Early Insights
+Here’s a quick rundown of my key observations:
+- **Initial Setup:** With 6400-point data downsampled to 1100 and a batch size of 8, the model plateaued around 25% accuracy.
+- **Preprocessing Tweaks:** I tried phase unwrapping, normalization, and smoothing, but these didn’t make a big impact on their own.
+- **Focusing on Key Frequencies:** Filtering out everything except the critical bands (10–40 Hz, 120–160 Hz, and 350–450 Hz) dramatically improved the model’s ability to learn.
+- **Hybrid CNN-Transformer Model:** Adding convolutional layers helped extract local patterns and reduce the sequence length before feeding the data into the transformer.
+- **Hyperparameter Tuning:** Increasing the number of transformer layers from 2 to 3 and reducing the batch size from 8 to 2 were game changers.
 
-1. **Small Dataset Challenges**  
-   The beam-signal dataset contains only **280 samples** (70 per class). Transformers typically thrive on large datasets, so it’s easy for the attention mechanism to overfit or fail to learn meaningful patterns when data are limited.
+The final model achieved an impressive **test accuracy of 97.86%**. Here’s the classification report for a quick look:
 
-2. **Phase Data and Discontinuities**  
-   The raw phase data had steep changes and discontinuities. I tried **phase unwrapping** to smooth out these jumps, but it didn’t significantly boost accuracy. Other standard preprocessing steps (e.g., normalization, smoothing) also had limited effect.
+         precision    recall  f1-score   support
 
----
+ Healthy       0.99      0.94      0.96        70
+accuracy                           0.98       280
 
-## 2. Focus on Key Frequency Bands
 
-A crucial breakthrough came when I analyzed the **frequency-magnitude** graphs across different damage conditions. The **first three vibrational modes** of the beam—**10–40 Hz**, **120–160 Hz**, and **350–450 Hz**—proved most influential for distinguishing among healthy, 2.96%, 5.92%, and 8.87% mass loss. 
+And here’s the confusion matrix that shows just how well the model distinguishes among the classes:
 
-I decided to **filter out frequencies** outside these ranges, drastically reducing each sample’s sequence length. This allowed the transformer’s attention mechanism to focus on the critical frequency bands where damage signatures were most apparent.
+<div style="text-align: center;">
+  <img src="/images/blog_related/confusion_matrix.png" alt="Confusion Matrix" style="width:50%;">
+  <p><strong>Confusion Matrix: Transformer Model on Beam-Signal Dataset</strong></p>
+</div>
 
-**Result:**  
-Accuracy began to climb, confirming that focusing on essential frequency ranges helps the model learn discriminative features.
+So what’s the takeaway? It’s not just about having a fancy model architecture. Success here depended on truly understanding the data. By narrowing our focus to the most informative frequency bands and carefully tuning the training process, we managed to overcome the limitations of a small dataset and get the transformer to really shine.
 
----
+Thank you for following along through this deep dive into our transformer model training. I hope these insights help you in your own projects on structural health monitoring or any other area where AI meets real-world data. Feel free to leave your thoughts or questions below—I'd love to hear about your experiences or any challenges you've faced.
 
-## 3. Hybrid CNN + Transformer
-
-Next, I experimented with a **hybrid approach**, incorporating **convolutional layers** before the transformer encoder. Convolutions are excellent at extracting local patterns—like resonance peaks—while also reducing sequence length. The reduced and more meaningful feature maps then fed into the transformer layers for global pattern recognition.
-
-Although the improvement wasn’t as dramatic as frequency filtering, it still contributed to better overall accuracy and stability during training.
-
----
-
-## 4. Hyperparameter Tuning and Batch Size
-
-### Increasing the Number of Layers
-
-I discovered that increasing the **number of transformer encoder layers** from 2 to 3 provided a more expressive model. The deeper architecture captured more nuanced relationships in the data, further improving performance.
-
-### Reducing the Batch Size
-
-Another significant gain came from lowering the **batch size**:
-- When **batch_size = 8**, training accuracy sometimes soared, but validation accuracy stagnated or regressed.
-- Dropping to **batch_size = 4** provided a smoother, more stable learning curve.
-- Finally, moving to **batch_size = 2** resulted in even better validation accuracy and consistent improvements across epochs.
-
-**Intuition:**  
-With a smaller batch size, the model updates weights more frequently and avoids some local minima or plateaus in high-dimensional weight space. In a **small dataset** scenario, large batch sizes can lead to quick but misleading convergence.
-
----
-
-## 5. Final Results
-
-By combining:
-1. **Filtering out irrelevant frequencies** (10–40 Hz, 120–160 Hz, 350–450 Hz),
-2. **A deeper transformer encoder** (3 layers),
-3. **A smaller batch size** (2),
-4. **Careful early stopping** (to avoid overfitting),
-
-I achieved the following **test accuracy** of **0.9786**:
+Until next time, keep exploring and learning!
 
