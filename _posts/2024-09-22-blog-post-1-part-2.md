@@ -10,7 +10,7 @@ tags:
 
 In [Part 1 of this series](https://balakumaranm.github.io/posts/2024/09/blog-post-1/), we introduced the beam-signal dataset and showed how vibrations were measured using an accelerometer. We also included graphs illustrating how the beam’s acceleration changes over time (time-domain signals) and mentioned that our dataset primarily consists of frequency-domain data.
 
-You might be wondering why we need to convert those time-domain signals into frequency-domain representations. In this post, we’ll explore the importance of frequency-domain analysis in structural health monitoring. We’ll revisit some of the concepts from the first post, explain the advantages of working in the frequency domain, and highlight how this representation can reveal critical details about the beam’s behavior that may be harder to see in time-domain signals alone.
+You might be wondering why the time-domain signals are converted into frequency-domain representations in the given dataset. In this post, we’ll explore the importance of frequency-domain analysis in structural health monitoring. We’ll revisit some of the concepts from the first post, explain the advantages of working in the frequency domain, and highlight how this representation can reveal critical details about the beam’s behavior that may be harder to see in time-domain signals alone.
 
 ### Referring to Images and Graphs from Part 1
 
