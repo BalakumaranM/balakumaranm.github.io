@@ -65,57 +65,67 @@ When we analyze a signal in the frequency domain, we typically obtain a static p
 
 To overcome these limitations, we can use the **Short-Time Fourier Transform (STFT)**. The STFT divides the signal into short segments (or windows) and computes the Fourier Transform on each, resulting in a two-dimensional representation that shows how the signal’s frequency content changes over time.
 
-The mathematical formulation of the STFT is:
+### A Simple Look at the Short-Time Fourier Transform (STFT)
 
-$$
-STFT\{x(t)\}(m, \omega) = \int_{-\infty}^{\infty} x(t) \, w(t-mT) \, e^{-j\omega t} \, dt
-$$
-
-where:  
-- \( x(t) \) is the original time-domain signal,  
-- \( w(t-mT) \) is the window function centered at time \( mT \), and  
-- \( \omega \) represents the angular frequency.
-
-The output of the STFT is typically visualized as a **spectrogram**, a 2D image where:
-- The **x-axis** represents time,
-- The **y-axis** represents frequency, and
-- The **color intensity** (or a third dimension) represents the magnitude (amplitude) of the frequencies.
-
-### Benefits for AI and Real-Time Monitoring
-
-This transformation from a 1D frequency-domain signal to a 2D spectrogram (or even a 3D representation, if you consider the magnitude as depth) brings several advantages for AI-based structural health monitoring:
-
-1. **Dense and Informative Representation:**  
-   The spectrogram provides a rich, image-like representation of the signal. Each “pixel” contains information about the amplitude of a specific frequency at a specific time, making it easier to detect subtle changes or patterns.
-
-2. **Leverage Transformer-Based Models:**  
-   Transformer models, which have recently shown great promise in processing sequential and image-like data, excel at capturing both local and global dependencies. When fed with spectrograms, these models can learn complex patterns related to damage progression and transient events, leading to improved detection accuracy.
-
-3. **Real-Time Inferencing on Edge Devices:**  
-   With the dense time-frequency data, AI models can be trained to recognize damage signatures more effectively. Once trained, these models can be deployed on edge devices for real-time monitoring. The ability to process spectrograms quickly means that even devices with limited computing power can provide timely warnings about structural anomalies.
-
-### Visualizing the Transformation
-
-To help illustrate this transformation, consider the following diagram:
+If you’d like a quick, intuitive explanation of how the **Short-Time Fourier Transform (STFT)** works, check out [this helpful video](https://www.youtube.com/watch?v=T9x2rvdhaIE&t=43s) (specifically from **1:20** to **3:49**).
 
 <div style="text-align: center;">
-  <img src="/images/blog_related/fourier_transform.png" alt="Fourier Transform Diagram" style="width:60%;">
-  <p><strong>Fourier Transform Diagram: Converting Time-Domain Data to Frequency-Domain Representation</strong></p>
+  <img src="/images/blog_related/Spectrogram-19thC.png" alt="Fourier Transform Diagram" style="width:60%;">
+  <p><strong>A spectrogram visualizing the results of a STFT of the words "nineteenth century". Here, frequencies are shown increasing up the vertical axis, and time on the horizontal axis. The legend to the right shows that the color intensity increases with the density</strong></p>
   <p>
-    <a href="https://en.wikipedia.org/wiki/Fourier_transform" target="_blank">View Original Content</a>
+    <a href="https://en.wikipedia.org/wiki/Short-time_Fourier_transform#/media/File:Spectrogram-19thC.png" target="_blank">View Original Content</a>
+  </p>
+</div>
+<div style="text-align: center;">
+  <img src="/images/blog_related/STFT.png" alt="Fourier Transform Diagram" style="width:60%;">
+  <p><strong>From time-domain graph -> time segment -> frequency-domain graph -> time frequency domain graph</strong></p>
+  <p>
+    <a href="https://www.youtube.com/watch?v=T9x2rvdhaIE&t=43s" target="_blank">View Original Content</a>
   </p>
 </div>
 
-Now, imagine a similar diagram that shows the STFT process, where the signal is segmented into overlapping windows, each transformed into a spectrum. The resulting spectrogram is akin to a heatmap, where the color represents the amplitude at each time-frequency coordinate.
+Here’s a brief summary of the concept shown in the image above:
 
-### Putting It All Together
+1. **Time-Domain Signal (A)**  
+   We start with a vibration signal in the time domain, think of it as amplitude plotted against time.
 
-In summary, while the frequency-domain data we discussed in Parts 1 and 2 provides valuable insights, it lacks the temporal resolution necessary for real-time analysis. By applying the STFT, we obtain a time-frequency representation that not only captures the evolving dynamics of the beam’s vibration but also produces data that are ideal for training transformer-based AI models. This richer data format enhances our ability to perform real-time structural health monitoring, especially when deployed on edge devices for immediate inference.
+2. **Segmenting the Signal (B)**  
+   Instead of taking the entire signal at once, we select a short window of data. This window can be tapered (for example, using a **Hann** window) to reduce edge effects.
 
-For more details on the fundamentals of our dataset and time-domain analysis, please refer back to [Part 1](https://balakumaranm.github.io/posts/2024/09/blog-post-1/) and [Part 2](https://balakumaranm.github.io/posts/2024/09/blog-post-2/).
+3. **Fourier Transform on Each Segment (C)**  
+   We apply the Fourier Transform to each short segment. This gives us a snapshot of the frequency content for that specific time slice.
+
+4. **Building the Time-Frequency View (D)**  
+   By sliding the window along the signal (one segment after another) and performing the transform repeatedly, we end up with multiple frequency snapshots. When we arrange these snapshots in chronological order, we get a **spectrogram**—a time-frequency representation where:
+   - The **x-axis** is time.
+   - The **y-axis** is frequency.
+   - The **color intensity** (or third dimension) represents amplitude.
+
+## Time-Frequency Representation for AI and Real-Time Monitoring
+
+Once vibration data has been converted to a **time-frequency representation**—for instance, using the **Short-Time Fourier Transform (STFT)**—it becomes far more valuable for **AI-based** structural health monitoring. Here are the key reasons why:
+
+1. **Dense and Informative Representation**  
+   By plotting frequency content against time, the STFT produces a spectrogram that resembles an image. Each “pixel” corresponds to a specific frequency at a specific moment, with color intensity (or height) indicating amplitude. This granular view makes it easier to spot subtle changes or emerging patterns that might be missed in a single frequency-domain snapshot.
+
+2. **Leveraging Transformer Models**  
+   Transformer architectures have excelled in tasks that require capturing both local and global patterns, from natural language processing to computer vision. When fed with spectrograms, transformers can analyze complex sequences of data—identifying transient damage signatures, tracking how frequencies shift over time, and learning from even small anomalies. This leads to more robust damage detection and prognosis.
+
+3. **Real-Time Inference on Edge Devices**  
+   One of the greatest strengths of time-frequency data is its applicability to real-time monitoring. After training on spectrograms, AI models—particularly those based on transformers—can be compressed or optimized for edge devices. This enables near-instant detection of anomalies or damage progression, even in resource-constrained environments like remote monitoring stations or onboard sensors.
+
+4. **Enhanced Damage Detection and Prognosis**  
+   With the STFT, sudden or transient events (e.g., impacts, fast-developing cracks) become more visible as they appear in the time-frequency map. Detecting these events quickly is crucial for preventing further damage and ensuring safety. The detailed view also helps with prognosis, allowing operators to estimate how a fault might evolve under continued stress.
 
 ---
 
-[Go to Part-3](/posts/2024/09/blog-post-4/)
+### Putting It All Together
+
+While the **frequency-domain** data discussed in [Part 1](https://balakumaranm.github.io/posts/2024/09/blog-post-1/) and [Part 2](https://balakumaranm.github.io/posts/2024/09/blog-post-2/) provides essential insights, it alone cannot capture the **temporal** evolution of vibrations. By incorporating a time-frequency approach such as the STFT, you gain a richer perspective that is especially useful for **transformer-based** AI models. These models can be deployed for **real-time** structural health monitoring on edge devices, enabling proactive maintenance decisions and helping to prevent catastrophic failures.
+
+Whether you’re a vibration engineer or an AI practitioner, understanding how to leverage time-frequency data for structural health monitoring can significantly improve damage detection and reduce downtime—ultimately leading to safer and more efficient structures.
+
+
+[Go to Part-4](/posts/2024/09/blog-post-4/)
 
 ---
