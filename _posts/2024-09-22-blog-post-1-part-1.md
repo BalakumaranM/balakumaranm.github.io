@@ -20,6 +20,9 @@ This multi-part blog post explores structural health monitoring and structural a
 
 We will employ deep learning techniques to analyze the data. This dataset supports research in damage detection, uncertainty quantification, stochastic modeling, and more. However, before diving into the analysis, it’s essential to develop a deep understanding of the dataset itself. In this section, I’ll provide a comprehensive background that even readers with basic mathematical knowledge can follow. Initially, I debated whether to jump straight into the results or build a strong foundation first, I chose the latter, aiming to address every question an average reader might have.
 
+For more details on the project, you can also check out the [project repository](https://github.com/BalakumaranM/Transformer-based-Structural-Health-Monitoring-using-Frequency-Response-Function-FRF).
+
+
 Let’s begin!
 
 ![BeamMasses.png](/images/blog_related/BeamMasses.png)
