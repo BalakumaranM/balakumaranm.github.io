@@ -6,40 +6,62 @@ tags:
   - shm
 ---
 
-Hey everyone, welcome to the final part of this series. In the earlier posts, we walked through our beam-signal dataset, explored time-domain vs. frequency-domain representations, and even dove into some time-frequency insights using the STFT. Today, I’m excited to share how I trained our transformer model and the many lessons I learned along the way.
+Welcome back! This is the fourth and final part of our deep dive into **Transformer-based Structural Health Monitoring**. By now, we’ve covered how the dataset was collected, why frequency-domain (and even time-frequency) data matters, and how to spot key indicators of damage. In this post, I’ll share how I actually **trained** the transformer model, the roadblocks I hit, and what finally led to some pretty amazing results.
 
-I won’t get into the nitty-gritty of how transformers work from the ground up—trust me, that could fill a book! If you’re curious about the deep theory, I highly recommend checking out courses like MIT’s 6.S191 or Andrew Ng’s deep learning series. Instead, I’ll jump straight into the practical side of things: what I did, the hurdles I faced, and how I eventually got the model to work.
+> **Quick Note**: I’m not going to explain how transformers evolved from single neurons, multi-layer networks, backpropagation, and so on—there are entire courses on that, like **MIT 6.S191** or **Andrew Ng’s** deep learning series. If you’re new to transformers, those resources are a great place to start.
 
-I started with a simple transformer encoder model using these hyperparameters:
-- **d_model:** 64
-- **Attention heads:** 4
-- **Encoder layers:** 2
-- **Dropout:** 0.1
-- **Batch size:** 8
-- **Learning rate:** 1e-4
-- **Max sequence length:** 1100 (downsampled from the original 6400 points)
+---
 
-Right off the bat, the model performed terribly—its best accuracy was barely around 25%. I was puzzled. I thought, “The dataset’s small, yes, but shouldn’t the model be able to learn something meaningful?” I tried everything: unwrapping the phase data to smooth out those abrupt jumps, normalizing, and even smoothing the signals. Nothing seemed to help.
+## Where It All Began
 
+I started off with a **simple transformer encoder**:
+- **Embedding dimension (d_model):** 64  
+- **Number of attention heads:** 4  
+- **Number of encoder layers:** 2  
+- **Dropout:** 0.1  
+- **Batch size:** 8  
+- **Learning rate:** 1e-4  
+- **Max sequence length:** 1100  
+
+Why 1100? Because each of our samples has 6400 points in the frequency domain, but I **downsampled** them to 1100 to reduce computational cost. I was hoping that even with fewer data points, the transformer’s attention mechanism could learn meaningful features.
+
+I was **terribly wrong**—the model topped out at about **25% accuracy**, which is basically random guessing among our four damage classes (healthy, 2.96%, 5.92%, and 8.87% mass loss). I tried typical preprocessing tricks—phase unwrapping to handle those discontinuities, normalizing, smoothing—but nothing moved the needle much.
+
+---
+## Realizing the Importance of Key Frequencies
 <div style="text-align: center;">
   <img src="/images/blog_related/test_1_magnitude.png" alt="Confusion Matrix" style="width:50%;">
   <p><strong>Frequency- Magnitude graph for sample 1 from all 4 classes</strong></p>
 </div>
 
-Then it hit me. I started looking at the frequency-magnitude graphs (you might remember those from Part 1 and 2) and noticed that not all frequencies are equally important. The first three vibrational modes—roughly between 10–40 Hz, 120–160 Hz, and 350–450 Hz—were clearly the key players in differentiating between healthy and damaged states. I decided to filter out frequencies outside these ranges, which made a world of difference. Suddenly, the transformer could focus on the parts of the frequency domain that really mattered.
+After some head-scratching, I plotted the **frequency-magnitude** graphs for each damage label. I noticed that the **first three vibrational modes**—around **10–40 Hz**, **120–160 Hz**, and **350–450 Hz**—were crucial for differentiating between healthy and damaged states. Frequencies outside those ranges barely changed with damage.
 
-I also experimented with a hybrid approach, adding a few convolutional layers before the transformer. Convolutional networks are fantastic at grabbing local patterns (like those resonance peaks we saw), and they helped reduce the sequence length even further. This hybrid model provided an extra boost, but it wasn’t until I tweaked the transformer itself that things really started to click.
+So, I decided to **filter out** everything else. The moment I did that, the transformer finally began to learn. It makes sense: the model could now focus on the **specific resonant frequencies** most affected by mass removal, rather than wasting attention on irrelevant data.
 
-One surprising yet crucial adjustment was reducing the batch size. With a batch size of 8, the model’s accuracy was erratic. When I lowered it to 4—and eventually to 2—the performance improved dramatically. With smaller batches, the model received more frequent weight updates, which seemed to help it navigate the complex loss landscape better, especially given our small dataset.
+---
 
-Here’s a quick rundown of my key observations:
-- **Initial Setup:** With 6400-point data downsampled to 1100 and a batch size of 8, the model plateaued around 25% accuracy.
-- **Preprocessing Tweaks:** I tried phase unwrapping, normalization, and smoothing, but these didn’t make a big impact on their own.
-- **Focusing on Key Frequencies:** Filtering out everything except the critical bands (10–40 Hz, 120–160 Hz, and 350–450 Hz) dramatically improved the model’s ability to learn.
-- **Hybrid CNN-Transformer Model:** Adding convolutional layers helped extract local patterns and reduce the sequence length before feeding the data into the transformer.
-- **Hyperparameter Tuning:** Increasing the number of transformer layers from 2 to 3 and reducing the batch size from 8 to 2 were game changers.
+## Adding a Little Convolution
 
-The final model achieved an impressive **test accuracy of 97.86%**. Here’s the classification report for a quick look:
+I also tested a **hybrid CNN + Transformer** approach. Convolutional layers are great at extracting local patterns—like those resonance peaks—while reducing the overall sequence length. Feeding these more compact features into the transformer gave a modest performance boost, but it wasn’t the magic bullet. The real breakthrough came from more direct tuning of the transformer itself.
+
+---
+## Tweaking Hyperparameters and Batch Size
+
+### Increasing the Depth
+
+I increased the **number of encoder layers** from 2 to 3. This gave the model more capacity to capture the nuanced relationships in the frequency data, especially now that it was focusing on the most important frequency bands.
+
+### Reducing the Batch Size
+
+I was initially using **batch_size = 8**. Training accuracy would shoot up, but validation accuracy wouldn’t budge—or sometimes even dropped. Out of curiosity, I reduced the batch size to 4, then to 2. This slower, more frequent update cycle allowed the model to generalize better, especially given our **small dataset** of just 280 samples total.
+
+In one experiment, I noticed that with **batch_size = 4**, the model improved steadily across epochs, rather than jumping around. When I took it even lower, to **batch_size = 2**, it finally converged to an accuracy I was really happy with.
+
+---
+
+## Final Results
+
+Putting it all together—**filtering to critical frequency bands**, adding a **third transformer layer**, and dropping **batch_size** to 2—yielded an awesome test accuracy of **0.9786**. Below is the classification report in a clearer table form:
 
 | **Class**       | **Precision** | **Recall** | **F1-Score** | **Support** |
 |-----------------|---------------|------------|-------------:|-----------:|
@@ -51,17 +73,33 @@ The final model achieved an impressive **test accuracy of 97.86%**. Here’s the
 | **Macro Avg**   | 0.98          | 0.98       | 0.98         | 280        |
 | **Weighted Avg**| 0.98          | 0.98       | 0.98         | 280        |
 
-
-And here’s the confusion matrix that shows just how well the model distinguishes among the classes:
+And here’s the confusion matrix:
 
 <div style="text-align: center;">
   <img src="/images/blog_related/confusion_matrix.png" alt="Confusion Matrix" style="width:50%;">
   <p><strong>Confusion Matrix: Transformer Model on Beam-Signal Dataset</strong></p>
 </div>
 
-So what’s the takeaway? It’s not just about having a fancy model architecture. Success here depended on truly understanding the data. By narrowing our focus to the most informative frequency bands and carefully tuning the training process, we managed to overcome the limitations of a small dataset and get the transformer to really shine.
+As you can see, each damage class is identified with very high precision and recall, making this model a solid choice for real-time structural health monitoring.
 
-Thank you for following along through this deep dive into our transformer model training. I hope these insights help you in your own projects on structural health monitoring or any other area where AI meets real-world data. Feel free to leave your thoughts or questions below—I'd love to hear about your experiences or any challenges you've faced.
+---
 
-Until next time, keep exploring and learning!
+## Wrapping Up
+
+So, that’s the story of how a **simple** transformer model went from **25% accuracy** to nearly **98%** on a relatively small dataset:
+
+- We **focused on the most relevant frequency bands** (the first three vibrational modes).  
+- We **tuned the transformer** (adding layers and adjusting batch size) to handle limited data.  
+- We confirmed that domain knowledge—like **knowing which frequencies matter most**—is as crucial as model architecture.
+
+If you’re thinking of applying a similar approach, remember that **transformers** can be quite data-hungry. Whenever possible, gather more data or use strategies like data augmentation. But if that’s not feasible, zero in on the parts of your signal that truly matter. The combination of **domain insight** and **careful hyperparameter tuning** can go a long way in bridging the gap.
+
+Thanks for reading this entire series! I hope it’s been helpful for anyone diving into **structural health monitoring** or exploring how **transformers** can be adapted to time/frequency-domain data. If you have any questions or want to share your own experiences, feel free to leave a comment or reach out.
+
+Happy modeling!
+
+
+
+
+
 
