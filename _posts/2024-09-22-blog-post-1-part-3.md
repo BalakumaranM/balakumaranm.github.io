@@ -1,5 +1,5 @@
 ---
-title: 'Damage Assessment of a Physical Beam Reinforced with Masses using Machine Learning - Part 3'
+title: 'Transformer based Structural Health Monitoring using Frequency Response Function (FRF) - Part 3'
 date: 2024-09-22
 permalink: /posts/2024/09/blog-post-3/
 tags:
@@ -109,6 +109,6 @@ As the dataset focuses on vibration-based damage detection, a variety of analyse
 
 ---
 
-[Next Page](/posts/2024/09/blog-post-4/)
+[Go to Part-3](/posts/2024/09/blog-post-4/)
 
 ---
