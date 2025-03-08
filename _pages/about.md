@@ -11,7 +11,7 @@ Welcome to my personal website! I’m Balakumaran Murugesan, completed Masters i
 ---
 
 ## Featured Projects
-- **Transformer based Structural Health Monitoring**: Developed a deep learning pipeline for damage detection in aerospace composite structures using frequency-domain vibration data. This project employs a hybrid CNN-Transformer model to extract critical features from vibration signals, with detailed methodologies—such as time-to-frequency conversion via STFT—documented in my blog posts and available on my GitHub repository: [Transformer-based SHM Repo](https://github.com/BalakumaranM/Transformer-based-Structural-Health-Monitoring-using-Frequency-Response-Function-FRF).
+- **Transformer based Structural Health Monitoring**: Developed a deep learning pipeline for damage detection in aerospace composite structures using frequency-domain vibration data. This project employs a hybrid CNN-Transformer model to extract critical features from vibration signals, with detailed methodologies, such as time-to-frequency conversion via STFT—documented in my blog posts and available on my GitHub repository: [Transformer-based SHM Repo](https://github.com/BalakumaranM/Transformer-based-Structural-Health-Monitoring-using-Frequency-Response-Function-FRF).
 
 [Explore More Projects](https://balakumaranm.github.io/portfolio/)
 
