@@ -6,10 +6,7 @@ redirect_from:
   - /about/
   - /about.html
 ---
-Welcome to my personal website! I’m Balakumaran Murugesan, completed Masters in Aerospace Engineering. I focused on Aircraft Structures in my Masters—especially composite structures. My interests and favorite subjects are Vibrations, Composite Materials, and Structural Health Monitoring. I also have industry experience in deep learning, computer vision, and NLP applications. Right now, I am focused on solving problems related to structures and vibrations using deep learning approaches.
-
-### What I Do:
-- **AI & Machine Learning in Aircraft Structures**: Building deep learning models for structural and vibration applications.
+Welcome to my personal website! I’m Balakumaran Murugesan, completed Masters in Aerospace Engineering. I focused on Aircraft Structures in my Masters, especially composite structures. My interests and favorite subjects are Vibrations, Composite Materials, and Structural Health Monitoring. I also have industry experience in deep learning, computer vision, and NLP applications. Right now, I am focused on solving problems related to structures and vibrations using deep learning approaches.
 
 ---
 
