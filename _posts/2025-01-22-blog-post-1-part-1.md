@@ -1,7 +1,7 @@
 ---
 title: 'Transformer based Structural Health Monitoring using Frequency Response Function (FRF) - Part 1'
-date: 2024-09-22
-permalink: /posts/2024/09/blog-post-1/
+date: 2025-01-22
+permalink: /posts/2025/01/blog-post-1/
 tags:
   shm
 ---
@@ -121,6 +121,6 @@ Below are the frequency domain graphs corresponding to the above signals:
 </div>
 
 
-[Go to Part-2](/posts/2024/09/blog-post-2/) 
+[Go to Part-2](/posts/2025/01/blog-post-2/) 
 
 ---

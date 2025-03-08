@@ -1,7 +1,7 @@
 ---
 title: 'Transformer based Structural Health Monitoring using Frequency Response Function (FRF) - Part 2'
-date: 2024-09-22
-permalink: /posts/2024/09/blog-post-2/
+date: 2025-01-22
+permalink: /posts/2025/01/blog-post-2/
 tags:
   shm
 ---
@@ -164,6 +164,6 @@ So since we took acceleration measurement of 6400 data points in acceleration-ti
 
 ---
 
-[Go to Part-3](/posts/2024/09/blog-post-3/)
+[Go to Part-3](/posts/2025/01/blog-post-3/)
 
 ---

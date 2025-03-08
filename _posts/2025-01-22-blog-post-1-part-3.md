@@ -1,7 +1,7 @@
 ---
 title: 'Transformer based Structural Health Monitoring using Frequency Response Function (FRF) - Part 3'
-date: 2024-09-22
-permalink: /posts/2024/09/blog-post-3/
+date: 2025-01-22
+permalink: /posts/2025/01/blog-post-3/
 tags:
   shm
 ---
@@ -126,6 +126,6 @@ While the **frequency-domain** data discussed in [Part 1](https://balakumaranm.g
 Whether you’re a vibration engineer or an AI practitioner, understanding how to leverage time-frequency data for structural health monitoring can significantly improve damage detection and reduce downtime—ultimately leading to safer and more efficient structures.
 
 
-[Go to Part-4](/posts/2024/09/blog-post-4/)
+[Go to Part-4](/posts/2025/01/blog-post-4/)
 
 ---
