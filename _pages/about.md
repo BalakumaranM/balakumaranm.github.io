@@ -6,29 +6,19 @@ redirect_from:
   - /about/
   - /about.html
 ---
-Welcome to my personal website! I’m Balakumaran Murugesan,  AI Research Engineer by profession, Aersopace Engineer by educational background based in India. I have with over 3 years of experience in deep learning, computer vision, and NLP applications. My expertise spans machine learning algorithms, model building, and data manipulation, and I have a strong background in Aerospace Engineering, which helps me solve complex problems with a unique, technical approach.
+Welcome to my personal website! I’m Balakumaran Murugesan, completed Masters in Aerospace Engineering. I focused on Aircraft Structures in my Masters—especially composite structures. My interests and favorite subjects are Vibrations, Composite Materials, and Structural Health Monitoring. I also have industry experience in deep learning, computer vision, and NLP applications. Right now, I am focused on solving problems related to structures and vibrations using deep learning approaches.
 
 ### What I Do:
-- **AI & Machine Learning**: Building deep learning models for computer vision and NLP applications.
-- **Full-stack Development**: Creating scalable applications using modern back-end and AI technologies.
-- **Cloud & Deployment**: Experience with cloud platforms (AWS, Azure) and deployment tools like Docker and Flask.
+- **AI & Machine Learning in Aircraft Structures**: Building deep learning models for structural and vibration applications.
 
 ---
 
 ## Featured Projects
-- **AI-based Educational Web App**: An AI-powered app that simplifies spaced repetition learning, making it easy to add flashcards and intelligently choose the questions to revise.
-- **Image Super-Resolution Engine**: Developed a GAN-based model for enhancing image resolution.
-- **No-code CV Pipeline**: Created a no-code pipeline for classification, object detection, and segmentation tasks, deployed in the cloud.
+- **Transformer based Structural Health Monitoring**: Developed a deep learning pipeline for damage detection in aerospace composite structures using frequency-domain vibration data. This project employs a hybrid CNN-Transformer model to extract critical features from vibration signals, with detailed methodologies—such as time-to-frequency conversion via STFT—documented in my blog posts and available on my GitHub repository: [Transformer-based SHM Repo](https://github.com/BalakumaranM/Transformer-based-Structural-Health-Monitoring-using-Frequency-Response-Function-FRF).
 
 [Explore More Projects](https://balakumaranm.github.io/portfolio/)
 
 ---
-
-## Learning Journey
-I’m constantly expanding my skill set! Currently, I’m diving into:
-- **Front-end Development**: HTML, CSS, JavaScript, React
-- **Cloud Technologies**: AWS, Azure
-- **Machine Learning**: Advanced topics in AI, linear algebra, probability, and statistics
 
 [Read My Blog](https://balakumaranm.github.io/year-archive/)
 
